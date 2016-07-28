@@ -11,17 +11,20 @@ use GuzzleHttp\Psr7\Request;
 use Ivory\HttpAdapter\Guzzle6HttpAdapter;
 use GuzzleHttp\Middleware;
 use Psr\Log\LoggerInterface;
+use Ivory\HttpAdapter\ConfigurationInterface;
 
 class GuzzleHttpClient extends Client implements ClientInterface
 {
 
     public $debug;
     public $httpLogAdapter;
+    protected $curlConfig;
 
-    public function __construct($debug, LoggerInterface $httpLogAdapter)
+    public function __construct($debug, LoggerInterface $httpLogAdapter, ConfigurationInterface $curlConfig)
     {
         $this->debug = $debug;
         $this->httpLogAdapter = $httpLogAdapter;
+        $this->curlConfig = $curlConfig;
 
         $config = [];
         if($this->debug){
@@ -39,7 +42,7 @@ class GuzzleHttpClient extends Client implements ClientInterface
      */
     public function getXmlRpcTransport()
     {
-        return new HttpAdapterTransport(new Guzzle6HttpAdapter($this));
+        return new HttpAdapterTransport(new Guzzle6HttpAdapter($this, $this->curlConfig));
     }
 
     /**

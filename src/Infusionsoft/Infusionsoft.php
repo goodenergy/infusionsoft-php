@@ -5,6 +5,7 @@ namespace Infusionsoft;
 use Infusionsoft\Http\ArrayLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Ivory\HttpAdapter\ConfigurationInterface;
 
 class Infusionsoft
 {
@@ -73,6 +74,11 @@ class Infusionsoft
      * @var Token
      */
     protected $token;
+
+    /**
+     * @var \Ivory\HttpAdapter\ConfigurationInterface
+     */
+    protected $curlConfig;
 
     /**
      * @param array $config
@@ -244,7 +250,7 @@ class Infusionsoft
     public function getHttpClient()
     {
         if (!$this->httpClient) {
-            return new Http\GuzzleHttpClient($this->debug, $this->getHttpLogAdapter());
+            return new Http\GuzzleHttpClient($this->debug, $this->getHttpLogAdapter(), $this->curlConfig);
         }
 
         return $this->httpClient;
@@ -317,6 +323,14 @@ class Infusionsoft
     public function setSerializer(Http\SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
+    }
+
+    /**
+     * @param ConfigurationInterface $curlConfig
+     */
+    public function setCurlConfig(ConfigurationInterface $curlConfig)
+    {
+        $this->curlConfig = $curlConfig;
     }
 
     /**
@@ -674,4 +688,3 @@ class Infusionsoft
     }
 
 }
-
